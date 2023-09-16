@@ -27,20 +27,26 @@ class ChatBot():
         try:
             self.text = voice_recogniser.recognize_google(audio)
             print("me -->  ", self.text)
-        except:
-            print("me --> ERROR")
-
+        except sr.UnknownValueError:
+            print("me --> No speech detected")
+            self.text = ""
+        except sr.RequestError as e:
+            print(f"me --> Recognition request failed: {str(e)}")
+            self.text = ""
 
     def wake_up(self, text):
         return True if self.name.lower() in text.lower() else False
     
     @staticmethod
     def text_to_speech(text):
-        print("AI --> ", text)
-        speaker = gTTS(text = text, lang = "en", slow = False)
-        speaker.save("res.mp3")
-        os.system("afplay res.mp3")
-        os.remove("res.mp3")
+        if text:
+            print("AI --> ", text)
+            speaker = gTTS(text=text, lang="en", slow=False)
+            speaker.save("res.mp3")
+            os.system("afplay res.mp3")
+            os.remove("res.mp3")
+        else:
+            print("AI --> No text to speak")
 
 
 
@@ -50,9 +56,9 @@ if __name__ == '__main__':
     while True:
         ai.speech_to_text()
 
-        res = ""
+        res = "I'm here to assist you. Please say my name to wake me up."
         # detect wake up call
-        if ai.wake_up(ai.text) is True:
+        if ai.wake_up(ai.text):
             res = "Hello I am Thursday the AI, what can I do for you?"
 
 
