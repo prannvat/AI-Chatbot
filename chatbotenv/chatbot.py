@@ -5,6 +5,13 @@ from gtts import gTTS
 # which can be easily played back
 import os
 
+import datetime
+import transformers 
+# transformers will allows the chatbot to become "intelligent"
+# using DialogueGPT which is trained by Microsoft using millions of 
+# conversations on Reddit.
+
+
 
 ''' 
 SPEECH RECOGNITION
@@ -48,7 +55,9 @@ class ChatBot():
         else:
             print("AI --> No text to speak")
 
-
+    @staticmethod
+    def action_time():
+        return datetime.datetime.now().time().strftime('%H:%M')
 
 if __name__ == '__main__':
 
@@ -60,6 +69,12 @@ if __name__ == '__main__':
         # detect wake up call
         if ai.wake_up(ai.text):
             res = "Hello I am Thursday the AI, what can I do for you?"
-
+        elif "time" in ai.text:
+            res = ai.action_time()
+        elif any(i in ai.text for i in ["thank","thanks", "cheers"]):
+             res = np.random.choice(
+                  ["you're welcome!","anytime!",
+                   "no problem!","cool!",
+                   "I'm here if you need me!","peace out!"])
 
         ai.text_to_speech(res)
